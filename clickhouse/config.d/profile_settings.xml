@@ -1,0 +1,14 @@
+<!--
+PORQUÊ: Este arquivo modifica o perfil 'default'. Qualquer usuário que herde
+este perfil (incluindo o nosso 'admin' criado pelo entrypoint) terá a
+permissão 'access_management', que lhe permite criar outros usuários,
+funções e perfis. Esta é a maneira declarativa e correta de conceder
+os privilégios necessários desde o início.
+-->
+<yandex>
+    <profiles>
+        <default>
+            <access_management>1</access_management>
+        </default>
+    </profiles>
+</yandex>

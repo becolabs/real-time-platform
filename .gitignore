@@ -1,0 +1,57 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv
+venv/
+env/
+
+# IDE / Editor specific
+.vscode/
+.idea/
+
+# Docker
+.dockerignore
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Local files
+.DS_Store
+
+# Arquivos de estado e lock locais do Terraform
+# NUNCA comite o estado localmente. Em projetos de equipe, usaríamos um backend remoto.
+*.tfstate
+*.tfstate.backup
+
+# Diretório de plugins e módulos do Terraform
+# Gerado pelo 'terraform init'.
+.terraform/
+
+# Arquivos de log de crash
+crash.log
+crash.*.log
+
+# Arquivos de plano do Terraform
+# Podem conter informações sensíveis.
+*.tfplan
+
+# Arquivos de variáveis que podem conter segredos
+# É uma boa prática não comitar variáveis locais.
+*.tfvars
+*.tfvars.json
+
+# Arquivos de override
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Configurações de CLI
+.terraformrc
+terraform.rc

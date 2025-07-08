@@ -1,0 +1,18 @@
+<!--
+PORQUÊ: Esta é a configuração definitiva. Definimos um usuário 'data_engineer'
+do zero, com uma senha explícita e a permissão 'access_management' ativada
+desde o início. Isso elimina qualquer conflito com o script de entrada.
+-->
+<yandex>
+    <users>
+        <data_engineer>
+            <password>S3cur3P@ssw0rd_DE</password>
+            <profile>default</profile>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <access_management>1</access_management>
+            <quota>default</quota>
+        </data_engineer>
+    </users>
+</yandex>
