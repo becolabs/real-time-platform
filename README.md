@@ -96,14 +96,14 @@ Este modo é ideal para desenvolver, testar e entender o fluxo de dados sem inco
 
 ### 2. Execução na Nuvem com Terraform e AWS
 
-Este modo demonstra a capacidade de provisionar e implantar a solução em um ambiente de nuvem de forma automatizada.
+Este modo demonstra a capacidade de provisionar e implantar a solução em um ambiente de nuvem de forma automatizada, validando a arquitetura em um cenário realista.
 
 #### ✅ Pré-requisitos da Nuvem
 
 -   Uma conta AWS.
 -   AWS CLI instalado e configurado.
 -   Terraform instalado.
--   Um par de chaves SSH criado na sua conta AWS (consulte a documentação para mais detalhes).
+-   Um par de chaves SSH criado na sua conta AWS.
 
 #### ⚙️ Passos para Execução na Nuvem
 
@@ -114,37 +114,60 @@ Este modo demonstra a capacidade de provisionar e implantar a solução em um am
 
 2.  **Configure a Infraestrutura:**
     -   Edite o arquivo `main.tf` para configurar seu endereço IP na regra de SSH do Security Group.
-    -   Adicione sua chave pública SSH ao recurso `aws_key_pair`.
+    -   Adicione sua chave pública SSH (extraída do seu arquivo `.pem`) ao recurso `aws_key_pair`.
+    -   O tipo de instância está configurado como `t3.micro` para um equilíbrio entre performance e custo (dentro do Free Tier).
 
 3.  **Provisione a Infraestrutura:**
-    Este comando criará a VPC, sub-rede, Security Group, e a instância EC2.
     ```bash
     terraform init  # Apenas na primeira vez
-    terraform plan  # Opcional, para revisar as mudanças
     terraform apply # Para criar a infraestrutura
     ```
 
 4.  **Acesse o Servidor:**
-    -   Obtenha o IP público da instância EC2 criada (no console da AWS ou na saída do Terraform).
+    -   Obtenha o IP público da instância EC2 criada no console da AWS.
     -   Conecte-se via SSH:
         ```bash
         ssh -i /caminho/para/sua/chave.pem ubuntu@IP_PUBLICO_DA_INSTANCIA
         ```
 
 5.  **Configure o Servidor e Implante a Aplicação (Dentro do SSH):**
-    -   **Instale as dependências:**
+    -   **Instale as dependências (Git, Docker, etc.):**
         ```bash
+        # Atualiza o sistema
         sudo apt-get update && sudo apt-get upgrade -y
-        # Comandos para instalar Git, Docker e Docker Compose serão adicionados aqui.
+        # Instala dependências e o Git
+        sudo apt-get install -y ca-certificates curl gnupg git
+        # Instala o Docker (script completo nos relatórios do projeto)
+        # ...
         ```
-    -   **Clone o repositório e execute o `docker-compose`** conforme os passos da execução local.
+    -   **Clone o repositório, configure permissões e execute o `docker compose`** conforme os passos da execução local.
 
-6.  **Desprovisione a Infraestrutura:**
+6.  **Acesse as UIs:**
+    Após a implantação, as interfaces estarão disponíveis nos seguintes endereços:
+    -   **Spark Master UI:** `http://<IP_PUBLICO_DA_INSTANCIA>:8080`
+    -   **Metabase UI:** `http://<IP_PUBLICO_DA_INSTANCIA>:3030`
+
+7.  **Desprovisione a Infraestrutura:**
     **IMPORTANTE:** Para evitar custos, destrua toda a infraestrutura após a validação.
     ```bash
     # No diretório terraform, na sua máquina local
     terraform destroy
     ```
+
+---
+
+## 💡 Lições Aprendidas e Próximas Etapas
+
+*   **Dimensionamento de Instâncias (Right-Sizing):** A implantação inicial em uma instância `t2.micro` falhou devido à sobrecarga de recursos durante a inicialização simultânea de múltiplos serviços. A migração para uma `t3.micro`, que possui um modelo de créditos de CPU mais flexível, resolveu o problema de responsividade. Isso destaca a importância de escolher o tipo de instância adequado para a carga de trabalho, mesmo em fases de teste.
+*   **Ciclo de Vida de IaC:** O projeto demonstrou o ciclo de vida completo da Infraestrutura como Código: provisionamento (`apply`), modificação (mudança do tipo de instância) e desprovisionamento (`destroy`), tudo gerenciado de forma controlada e previsível.
+*   **Depuração Multi-camada:** Os desafios enfrentados exigiram depuração em todas as camadas da stack: código Terraform, configurações da AWS (Security Groups, AZs), sistema operacional do servidor (UFW) e a própria aplicação (Docker).
+
+**Próximas Etapas (Para um Projeto em Produção):**
+1.  **Utilizar Serviços Gerenciados:** Migrar de serviços auto-hospedados em EC2 para serviços gerenciados da AWS (ex: Amazon MSK para Kafka, Amazon EMR para Spark, Amazon RDS/Redshift para o banco de dados) para aumentar a resiliência e reduzir a sobrecarga operacional.
+2.  **Automação de CI/CD:** Criar um pipeline de CI/CD (ex: com GitHub Actions) para automatizar os testes e a implantação da aplicação sempre que houver uma alteração no código.
+3.  **Monitoramento e Alertas:** Implementar uma solução de monitoramento robusta (ex: Prometheus/Grafana ou Amazon CloudWatch) para observar a saúde da aplicação e da infraestrutura, com alertas para falhas ou anomalias.
+
+---
 
 ---
 
