@@ -204,7 +204,7 @@ resource "aws_instance" "rtp_server" {
 
   # O "Porquê" do Tipo de Instância: t2.micro é elegível para o Free Tier,
   # minimizando os custos durante o desenvolvimento e validação.
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
 
   # Associa a instância à nossa sub-rede pública.
   subnet_id     = aws_subnet.public.id
